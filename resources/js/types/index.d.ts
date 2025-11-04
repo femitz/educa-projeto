@@ -41,3 +41,24 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Categoria {
+    id: number;
+    nome: string;
+    created_at: string;
+    updated_at: string;
+    total_acessos?: number; 
+}
+
+export interface Curso {
+    id: number;
+    nome: string;
+    descricao: string;
+    tempo_horas: number;
+    empresa: string;
+    link?: string | null;
+    created_at: string;
+    updated_at: string;
+    categorias?: Categoria[];
+    usuarios_count?: number; 
+}
