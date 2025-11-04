@@ -32,7 +32,7 @@ import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search, GraduationCap } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Menu, Search, GraduationCap, Shield, Tag } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -46,6 +46,24 @@ const mainNavItems: NavItem[] = [
         title: 'Cursos',
         href: '/cursos',
         icon: GraduationCap,
+    },
+];
+
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Admin Dashboard',
+        href: '/admin/dashboard',
+        icon: Shield,
+    },
+    {
+        title: 'Gerenciar Cursos',
+        href: '/admin/cursos',
+        icon: GraduationCap,
+    },
+    {
+        title: 'Gerenciar Categorias',
+        href: '/admin/categorias',
+        icon: Tag,
     },
 ];
 
@@ -72,6 +90,7 @@ interface AppHeaderProps {
 export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
+    const isAdmin = auth.user?.isAdmin === true;
     const getInitials = useInitials();
     return (
         <>
@@ -117,6 +136,26 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                     <span>{item.title}</span>
                                                 </Link>
                                             ))}
+                                            {isAdmin && (
+                                                <>
+                                                    <div className="my-2 border-t border-sidebar-border"></div>
+                                                    {adminNavItems.map((item) => (
+                                                        <Link
+                                                            key={item.title}
+                                                            href={item.href}
+                                                            className="flex items-center space-x-2 font-medium"
+                                                        >
+                                                            {item.icon && (
+                                                                <Icon
+                                                                    iconNode={item.icon}
+                                                                    className="h-5 w-5"
+                                                                />
+                                                            )}
+                                                            <span>{item.title}</span>
+                                                        </Link>
+                                                    ))}
+                                                </>
+                                            )}
                                         </div>
 
                                         <div className="flex flex-col space-y-4">
@@ -159,6 +198,35 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 {mainNavItems.map((item, index) => (
                                     <NavigationMenuItem
                                         key={index}
+                                        className="relative flex h-full items-center"
+                                    >
+                                        <Link
+                                            href={item.href}
+                                            className={cn(
+                                                navigationMenuTriggerStyle(),
+                                                isSameUrl(
+                                                    page.url,
+                                                    item.href,
+                                                ) && activeItemStyles,
+                                                'h-9 cursor-pointer px-3',
+                                            )}
+                                        >
+                                            {item.icon && (
+                                                <Icon
+                                                    iconNode={item.icon}
+                                                    className="mr-2 h-4 w-4"
+                                                />
+                                            )}
+                                            {item.title}
+                                        </Link>
+                                        {isSameUrl(page.url, item.href) && (
+                                            <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
+                                        )}
+                                    </NavigationMenuItem>
+                                ))}
+                                {isAdmin && adminNavItems.map((item, index) => (
+                                    <NavigationMenuItem
+                                        key={`admin-${index}`}
                                         className="relative flex h-full items-center"
                                     >
                                         <Link
