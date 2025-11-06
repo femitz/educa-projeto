@@ -49,4 +49,10 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+    public function cursos(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Curso::class, 'curso_usuario')
+            ->withTimestamps();
+    }
 }
